@@ -35,6 +35,7 @@ drop_info | Boolean | true | remove console.info(...)
 drop_warn | Boolean | false | remove console.warn(...)
 drop_error | Boolean | false | remove console.error(...) 
 exclude   | Array | [] | exclude chunk - you should use it to reduce building time
+replace   | Function | consoleStr=>'' | replace match string
 
 ## Code
 ```
@@ -44,5 +45,6 @@ new DropConsoleWebpackPlugin({
     drop_warn   : false,
     drop_error  : false,
     exclude     : ['manifest'],
+    replace     : ()=>'/* hello world */'
 })
 ```

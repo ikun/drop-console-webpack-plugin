@@ -14,7 +14,7 @@ class Replace{
         let rightStack = this.rightStack
         let condition
         let conditionMatch = this.str.toString().match(this.regexStr)
-        
+
         if(this.regexStr.length<1)
         {
             return -1
@@ -27,7 +27,7 @@ class Replace{
         {
         	return -1
         }
-        
+
     	if(leftStack.length==1)
         {
             return this.str.toString().indexOf('(',leftStack[leftStack.length-1]+condition.length+3)
@@ -42,7 +42,7 @@ class Replace{
            this.orIndex += 1
            return this.matchLeftBracket(conditionArr)
         }
-        
+
         this.orIndex = 0;
         return index
     }
@@ -67,7 +67,7 @@ class Replace{
     matchRightBracket(){
         let leftStack = this.leftStack
         let rightStack = this.rightStack
-        
+
         if(rightStack.length>0)
         {
             return this.str.toString().indexOf(')',rightStack[rightStack.length-1]+1)
@@ -102,7 +102,10 @@ class Replace{
             if(leftStack.length>0&&rightStack.length===leftStack.length)
             {
                 var strArr = this.str.toString().split('')
-                strArr.splice(leftStack[0],rightStack[rightStack.length-1]-leftStack[0]+1)
+                var consoleStr = strArr
+                    .slice(leftStack[0],leftStack[0]+rightStack[rightStack.length - 1]-leftStack[0]+1)
+                    .join('')
+                strArr.splice(leftStack[0],rightStack[rightStack.length-1]-leftStack[0]+1,this.replaceConsole(consoleStr))
                 this.str = new Buffer(strArr.join(''))
                 this.leftStack = []
                 this.rightStack = []
@@ -126,12 +129,13 @@ class Replace{
             }
             return this.toRecursive(conditionArr,cb)
     }
-    startReplace(conditionArr,cb){
+    startReplace(conditionArr,replaceConsole,cb){
         // console.log('---')
+        this.replaceConsole = replaceConsole
     	this.regexStr = this.getRegex(conditionArr)
     	return this.toReplace(conditionArr,cb)
     }
-    
+
 }
 
 // new Replace('dsad||console.log(fun())function A(){console.info(123)}console.error()//123213console.warn(dasdadasdfunction(){a})').startReplace(['console.info','console.log','console.error','console.warn'],(res)=>{

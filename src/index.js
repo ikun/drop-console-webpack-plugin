@@ -11,7 +11,7 @@ var _fs2 = _interopRequireDefault(_fs);
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
-const ConcatSource = require("webpack-sources").ConcatSource;
+const ConcatSource = require("./../../react-project-tpl/node_modules/webpack-sources").ConcatSource;
 
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -30,6 +30,9 @@ function DropConsoleWebpackPlugin(options) {
     this.pluginName = 'DropConsoleWebpackPlugin'
     this.emitCompilation = null;
     this.excludeRegex='';
+    this.replaceConsole = function(consoleStr) {
+        return '';
+    }
   // }
 
 }
@@ -90,7 +93,7 @@ function DropConsoleWebpackPlugin(options) {
     	conditionArr.push('console.warn')
     }
     source = await new Promise((resolve)=>{
-    	replace.startReplace(conditionArr,(res)=>{
+    	replace.startReplace(conditionArr, this.replaceConsole,(res)=>{
     		resolve(res)
     	})
     })
@@ -121,6 +124,7 @@ function DropConsoleWebpackPlugin(options) {
   	const startTime = Date.now()
     var self = this;
     this.excludeRegex = this.initExcludeRegex()
+    this.options.replace && (this.replaceConsole = this.options.replace)
     compiler.plugin('emit',async function(compilation, callback) {
         await self.findChunks(compilation)
         console.info('[drop-console]:'+parseInt((Date.now()-startTime) / 1000)+'s')
